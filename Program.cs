@@ -9,13 +9,19 @@ namespace Pacman
 
         static void Main(string[] args)
         {
+            Console.CursorVisible = false;
+            bool isPlaying = true;
             int pacmanX, pacmanY;
             char[,] map = ReadMap("map1", out pacmanX, out pacmanY);
             
             DrawMap(map);
 
-            Console.SetCursorPosition(pacmanX, pacmanY);
-            Console.Write(PACMAN_SYMBOL);
+            while (isPlaying) 
+            {
+                Console.SetCursorPosition(pacmanX, pacmanY);
+                Console.Write(PACMAN_SYMBOL);
+                Console.ReadKey(true);
+            }
         }
 
         static void DrawMap(char[,] map)
