@@ -37,7 +37,6 @@ namespace Pacman
 
             string mapFilePath = $"../../maps/{mapName}.txt";
             string[] fileLines = File.ReadAllLines(mapFilePath);
-
             char[,] map = new char[fileLines.Length, fileLines[0].Length];
 
             for (int i = 0, mapRows = map.GetLength(0); i < mapRows; i++)
