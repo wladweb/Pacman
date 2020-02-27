@@ -5,10 +5,17 @@ namespace Pacman
 {
     class Program
     {
+        private const char PACMAN_SYMBOL = '@';
+
         static void Main(string[] args)
         {
-            char[,] map = ReadMap("map1");
+            int pacmanX, pacmanY;
+            char[,] map = ReadMap("map1", out pacmanX, out pacmanY);
+            
             DrawMap(map);
+
+            Console.SetCursorPosition(pacmanX, pacmanY);
+            Console.Write(PACMAN_SYMBOL);
         }
 
         static void DrawMap(char[,] map)
@@ -23,8 +30,11 @@ namespace Pacman
             }
         }
 
-        static char[,] ReadMap(string mapName)
+        static char[,] ReadMap(string mapName, out int pacmanX, out int pacmanY)
         {
+            pacmanX = 0;
+            pacmanY = 0;
+
             string mapFilePath = $"../../maps/{mapName}.txt";
             string[] fileLines = File.ReadAllLines(mapFilePath);
 
@@ -34,10 +44,16 @@ namespace Pacman
             {
                 for (int j = 0, mapCols = map.GetLength(1); j < mapCols; j++)
                 {
-                    map[i, j] = fileLines[i][j];
+                    char currentChar = fileLines[i][j];
+                    map[i, j] = currentChar;
+
+                    if (currentChar == PACMAN_SYMBOL)
+                    {
+                        pacmanX = j;
+                        pacmanY = i;
+                    }
                 }
             }
-
             return map;
         }
     }
