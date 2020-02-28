@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 
 namespace Pacman
 {
@@ -24,40 +25,50 @@ namespace Pacman
                 if (Console.KeyAvailable)
                 {
                     ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-
-                    switch (keyInfo.Key)
-                    {
-                        case ConsoleKey.UpArrow:
-                            pacmanDX = -1;
-                            pacmanDY = 0;
-                            break;
-                        case ConsoleKey.DownArrow:
-                            pacmanDX = 1;
-                            pacmanDY = 0;
-                            break;
-                        case ConsoleKey.LeftArrow:
-                            pacmanDX = 0;
-                            pacmanDY = -1;
-                            break;
-                        case ConsoleKey.RightArrow:
-                            pacmanDX = 0;
-                            pacmanDY = 1;
-                            break;
-                    }
-
-                    if (map[pacmanX + pacmanDX, pacmanY + pacmanDY] != '#')
-                    {
-                        Console.SetCursorPosition(pacmanY, pacmanX);
-                        Console.Write(" ");
-
-                        pacmanX += pacmanDX;
-                        pacmanY += pacmanDY;
-
-                        Console.SetCursorPosition(pacmanY, pacmanX);
-                        Console.Write(PACMAN_SYMBOL);
-                    }
+                    ChangeDirection(keyInfo, ref pacmanDX, ref pacmanDY);                    
                 }
+
+                if (map[pacmanX + pacmanDX, pacmanY + pacmanDY] != '#')
+                {
+                    Move(ref pacmanX, ref pacmanY, pacmanDX, pacmanDY);
+                }
+                Thread.Sleep(200);
             }
+        }
+
+        static void ChangeDirection(ConsoleKeyInfo keyInfo, ref int dx, ref int dy) 
+        {
+            switch (keyInfo.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    dx = -1;
+                    dy = 0;
+                    break;
+                case ConsoleKey.DownArrow:
+                    dx = 1;
+                    dy = 0;
+                    break;
+                case ConsoleKey.LeftArrow:
+                    dx = 0;
+                    dy = -1;
+                    break;
+                case ConsoleKey.RightArrow:
+                    dx = 0;
+                    dy = 1;
+                    break;
+            }
+        }
+
+        static void Move(ref int x, ref int y, int dx, int dy)
+        {
+            Console.SetCursorPosition(y, x);
+            Console.Write(" ");
+
+            x += dx;
+            y += dy;
+
+            Console.SetCursorPosition(y, x);
+            Console.Write(PACMAN_SYMBOL);
         }
 
         static void DrawMap(char[,] map)
