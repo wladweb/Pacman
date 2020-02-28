@@ -48,6 +48,8 @@ namespace Pacman
                 }
             }
 
+            Console.SetCursorPosition(0, 21);
+
             if (collectedDots == allDots)
             {
                 Console.WriteLine("You win");
