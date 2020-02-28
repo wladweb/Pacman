@@ -13,7 +13,7 @@ namespace Pacman
             bool isPlaying = true;
 
             int pacmanX, pacmanY;
-            int pacmanDX = 1, pacmanDY = 0;
+            int pacmanDX = 0, pacmanDY = 1;
 
             char[,] map = ReadMap("map1", out pacmanX, out pacmanY);
             
@@ -21,9 +21,6 @@ namespace Pacman
 
             while (isPlaying) 
             {
-                Console.SetCursorPosition(pacmanX, pacmanY);
-                Console.Write(PACMAN_SYMBOL);
-
                 if (Console.KeyAvailable)
                 {
                     ConsoleKeyInfo keyInfo = Console.ReadKey(true);
@@ -31,21 +28,33 @@ namespace Pacman
                     switch (keyInfo.Key)
                     {
                         case ConsoleKey.UpArrow:
-                            pacmanDY = -1;
-                            pacmanDX = 0;
+                            pacmanDX = -1;
+                            pacmanDY = 0;
                             break;
                         case ConsoleKey.DownArrow:
-                            pacmanDY = 1;
-                            pacmanDX = 0;
+                            pacmanDX = 1;
+                            pacmanDY = 0;
                             break;
                         case ConsoleKey.LeftArrow:
-                            pacmanDY = 0;
-                            pacmanDX = -1;
+                            pacmanDX = 0;
+                            pacmanDY = -1;
                             break;
                         case ConsoleKey.RightArrow:
-                            pacmanDY = 0;
-                            pacmanDX = 1;
+                            pacmanDX = 0;
+                            pacmanDY = 1;
                             break;
+                    }
+
+                    if (map[pacmanX + pacmanDX, pacmanY + pacmanDY] != '#')
+                    {
+                        Console.SetCursorPosition(pacmanY, pacmanX);
+                        Console.Write(" ");
+
+                        pacmanX += pacmanDX;
+                        pacmanY += pacmanDY;
+
+                        Console.SetCursorPosition(pacmanY, pacmanX);
+                        Console.Write(PACMAN_SYMBOL);
                     }
                 }
             }
@@ -81,8 +90,8 @@ namespace Pacman
 
                     if (currentChar == PACMAN_SYMBOL)
                     {
-                        pacmanX = j;
-                        pacmanY = i;
+                        pacmanX = i;
+                        pacmanY = j;
                     }
                 }
             }
