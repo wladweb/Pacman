@@ -7,6 +7,7 @@ namespace Pacman
     class Program
     {
         private const char PACMAN_SYMBOL = '@';
+        private const char GHOST_SYMBOL = '$';
 
         static void Main(string[] args)
         {
@@ -18,8 +19,12 @@ namespace Pacman
 
             int pacmanX, pacmanY;
             int pacmanDX = 0, pacmanDY = 1;
+            bool isAlive = true;
 
-            char[,] map = ReadMap("map1", out pacmanX, out pacmanY, ref allDots);
+            int ghostX, ghostY;
+            int ghostDX = 0, ghostDY = -1;
+
+            char[,] map = ReadMap("map1", out pacmanX, out pacmanY, out ghostX, out ghostY, ref allDots);
             
             DrawMap(map);
 
@@ -36,11 +41,20 @@ namespace Pacman
 
                 if (map[pacmanX + pacmanDX, pacmanY + pacmanDY] != '#')
                 {
-                    Move(ref pacmanX, ref pacmanY, pacmanDX, pacmanDY);
+                    Move(' ', PACMAN_SYMBOL, ref pacmanX, ref pacmanY, pacmanDX, pacmanDY);
                     CollectDots(map, pacmanX, pacmanY, ref collectedDots);
                 }
-                
-                Thread.Sleep(50);
+
+                if (map[ghostX + ghostDX, ghostY + ghostDY] != '#')
+                {
+                    Move('.', GHOST_SYMBOL, ref ghostX, ref ghostY, ghostDX, ghostDY);
+                }
+                else 
+                {
+                    //
+                }
+
+                Thread.Sleep(200);
 
                 if (collectedDots == allDots) 
                 {
@@ -88,16 +102,16 @@ namespace Pacman
             }
         }
 
-        static void Move(ref int x, ref int y, int dx, int dy)
+        static void Move(char previousSymbol, char symbol, ref int x, ref int y, int dx, int dy)
         {
             Console.SetCursorPosition(y, x);
-            Console.Write(" ");
+            Console.Write(previousSymbol);
 
             x += dx;
             y += dy;
 
             Console.SetCursorPosition(y, x);
-            Console.Write(PACMAN_SYMBOL);
+            Console.Write(symbol);
         }
 
         static void DrawMap(char[,] map)
@@ -112,10 +126,12 @@ namespace Pacman
             }
         }
 
-        static char[,] ReadMap(string mapName, out int pacmanX, out int pacmanY, ref int allDots)
+        static char[,] ReadMap(string mapName, out int pacmanX, out int pacmanY, out int ghostX, out int ghostY, ref int allDots)
         {
             pacmanX = 0;
             pacmanY = 0;
+            ghostX = 0;
+            ghostY = 0;
 
             string mapFilePath = $"../../maps/{mapName}.txt";
             string[] fileLines = File.ReadAllLines(mapFilePath);
@@ -132,8 +148,15 @@ namespace Pacman
                     {
                         pacmanX = i;
                         pacmanY = j;
+                        map[i, j] = '.';
                     }
-                    else if (map[i,j] == ' ')
+                    else if (map[i, j] == '$')
+                    {
+                        ghostX = i;
+                        ghostY = j;
+                        map[i, j] = '.';
+                    }
+                    else if (map[i, j] == ' ')
                     {
                         map[i, j] = '.';
                         allDots++;
