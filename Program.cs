@@ -11,7 +11,10 @@ namespace Pacman
         {
             Console.CursorVisible = false;
             bool isPlaying = true;
+
             int pacmanX, pacmanY;
+            int pacmanDX = 1, pacmanDY = 0;
+
             char[,] map = ReadMap("map1", out pacmanX, out pacmanY);
             
             DrawMap(map);
@@ -20,7 +23,31 @@ namespace Pacman
             {
                 Console.SetCursorPosition(pacmanX, pacmanY);
                 Console.Write(PACMAN_SYMBOL);
-                Console.ReadKey(true);
+
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+                    switch (keyInfo.Key)
+                    {
+                        case ConsoleKey.UpArrow:
+                            pacmanDY = -1;
+                            pacmanDX = 0;
+                            break;
+                        case ConsoleKey.DownArrow:
+                            pacmanDY = 1;
+                            pacmanDX = 0;
+                            break;
+                        case ConsoleKey.LeftArrow:
+                            pacmanDY = 0;
+                            pacmanDX = -1;
+                            break;
+                        case ConsoleKey.RightArrow:
+                            pacmanDY = 0;
+                            pacmanDX = 1;
+                            break;
+                    }
+                }
             }
         }
 
