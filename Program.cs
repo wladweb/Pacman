@@ -58,7 +58,12 @@ namespace Pacman
 
                 Thread.Sleep(200);
 
-                if (collectedDots == allDots) 
+                if (ghostX == pacmanX && ghostY == pacmanY)
+                {
+                    isAlive = false;
+                }
+
+                if (collectedDots == allDots || !isAlive) 
                 {
                     isPlaying = false;
                 }
@@ -69,6 +74,10 @@ namespace Pacman
             if (collectedDots == allDots)
             {
                 Console.WriteLine("You win");
+            }
+            else if (!isAlive)
+            {
+                Console.WriteLine("You lost");
             }
         }
 
