@@ -14,6 +14,8 @@ namespace Pacman
             Console.CursorVisible = false;
             bool isPlaying = true;
 
+            Random random = new Random();
+
             int allDots = 0;
             int collectedDots = 0;
 
@@ -41,17 +43,17 @@ namespace Pacman
 
                 if (map[pacmanX + pacmanDX, pacmanY + pacmanDY] != '#')
                 {
-                    Move(' ', PACMAN_SYMBOL, ref pacmanX, ref pacmanY, pacmanDX, pacmanDY);
                     CollectDots(map, pacmanX, pacmanY, ref collectedDots);
+                    Move(map, PACMAN_SYMBOL, ref pacmanX, ref pacmanY, pacmanDX, pacmanDY);
                 }
 
                 if (map[ghostX + ghostDX, ghostY + ghostDY] != '#')
                 {
-                    Move('.', GHOST_SYMBOL, ref ghostX, ref ghostY, ghostDX, ghostDY);
+                    Move(map, GHOST_SYMBOL, ref ghostX, ref ghostY, ghostDX, ghostDY);
                 }
                 else 
                 {
-                    //
+                    ChangeDirection(random, ref ghostDX, ref ghostDY);
                 }
 
                 Thread.Sleep(200);
@@ -102,10 +104,35 @@ namespace Pacman
             }
         }
 
-        static void Move(char previousSymbol, char symbol, ref int x, ref int y, int dx, int dy)
+        static void ChangeDirection(Random random, ref int dx, ref int dy)
+        {
+            int ghostDirection = random.Next(1, 5);
+
+            switch (ghostDirection)
+            {
+                case 1:
+                    dx = -1;
+                    dy = 0;
+                    break;
+                case 2:
+                    dx = 1;
+                    dy = 0;
+                    break;
+                case 3:
+                    dx = 0;
+                    dy = -1;
+                    break;
+                case 4:
+                    dx = 0;
+                    dy = 1;
+                    break;
+            }
+        }
+
+        static void Move(char[,] map, char symbol, ref int x, ref int y, int dx, int dy)
         {
             Console.SetCursorPosition(y, x);
-            Console.Write(previousSymbol);
+            Console.Write(map[x,y]);
 
             x += dx;
             y += dy;
