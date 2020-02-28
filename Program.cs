@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 
 namespace Pacman
 {
@@ -9,12 +10,64 @@ namespace Pacman
 
         static void Main(string[] args)
         {
+            Console.CursorVisible = false;
+            bool isPlaying = true;
+
             int pacmanX, pacmanY;
+            int pacmanDX = 0, pacmanDY = 1;
+
             char[,] map = ReadMap("map1", out pacmanX, out pacmanY);
             
             DrawMap(map);
 
-            Console.SetCursorPosition(pacmanX, pacmanY);
+            while (isPlaying) 
+            {
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                    ChangeDirection(keyInfo, ref pacmanDX, ref pacmanDY);                    
+                }
+
+                if (map[pacmanX + pacmanDX, pacmanY + pacmanDY] != '#')
+                {
+                    Move(ref pacmanX, ref pacmanY, pacmanDX, pacmanDY);
+                }
+                Thread.Sleep(200);
+            }
+        }
+
+        static void ChangeDirection(ConsoleKeyInfo keyInfo, ref int dx, ref int dy) 
+        {
+            switch (keyInfo.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    dx = -1;
+                    dy = 0;
+                    break;
+                case ConsoleKey.DownArrow:
+                    dx = 1;
+                    dy = 0;
+                    break;
+                case ConsoleKey.LeftArrow:
+                    dx = 0;
+                    dy = -1;
+                    break;
+                case ConsoleKey.RightArrow:
+                    dx = 0;
+                    dy = 1;
+                    break;
+            }
+        }
+
+        static void Move(ref int x, ref int y, int dx, int dy)
+        {
+            Console.SetCursorPosition(y, x);
+            Console.Write(" ");
+
+            x += dx;
+            y += dy;
+
+            Console.SetCursorPosition(y, x);
             Console.Write(PACMAN_SYMBOL);
         }
 
@@ -48,8 +101,8 @@ namespace Pacman
 
                     if (currentChar == PACMAN_SYMBOL)
                     {
-                        pacmanX = j;
-                        pacmanY = i;
+                        pacmanX = i;
+                        pacmanY = j;
                     }
                 }
             }
