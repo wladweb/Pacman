@@ -13,15 +13,21 @@ namespace Pacman
             Console.CursorVisible = false;
             bool isPlaying = true;
 
+            int allDots = 0;
+            int collectedDots = 0;
+
             int pacmanX, pacmanY;
             int pacmanDX = 0, pacmanDY = 1;
 
-            char[,] map = ReadMap("map1", out pacmanX, out pacmanY);
+            char[,] map = ReadMap("map1", out pacmanX, out pacmanY, ref allDots);
             
             DrawMap(map);
 
             while (isPlaying) 
             {
+                Console.SetCursorPosition(0, 20);
+                Console.WriteLine($"Collected: {collectedDots}/{allDots}");
+
                 if (Console.KeyAvailable)
                 {
                     ConsoleKeyInfo keyInfo = Console.ReadKey(true);
@@ -31,8 +37,29 @@ namespace Pacman
                 if (map[pacmanX + pacmanDX, pacmanY + pacmanDY] != '#')
                 {
                     Move(ref pacmanX, ref pacmanY, pacmanDX, pacmanDY);
+                    CollectDots(map, pacmanX, pacmanY, ref collectedDots);
                 }
-                Thread.Sleep(200);
+                
+                Thread.Sleep(50);
+
+                if (collectedDots == allDots) 
+                {
+                    isPlaying = false;
+                }
+            }
+
+            if (collectedDots == allDots)
+            {
+                Console.WriteLine("You win");
+            }
+        }
+
+        static void CollectDots(char[,] map, int pacmanX, int pacmanY, ref int collectedDots)
+        {
+            if (map[pacmanX, pacmanY] == '.')
+            {
+                collectedDots++;
+                map[pacmanX, pacmanY] = ' ';
             }
         }
 
@@ -83,7 +110,7 @@ namespace Pacman
             }
         }
 
-        static char[,] ReadMap(string mapName, out int pacmanX, out int pacmanY)
+        static char[,] ReadMap(string mapName, out int pacmanX, out int pacmanY, ref int allDots)
         {
             pacmanX = 0;
             pacmanY = 0;
@@ -103,6 +130,11 @@ namespace Pacman
                     {
                         pacmanX = i;
                         pacmanY = j;
+                    }
+                    else if (map[i,j] == ' ')
+                    {
+                        map[i, j] = '.';
+                        allDots++;
                     }
                 }
             }
